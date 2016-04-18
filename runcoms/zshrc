@@ -17,8 +17,12 @@ setxkbmap -option ctrl:swapcaps
 export TERM="xterm-256color"
 stty -ixon
 
+# aliases
+alias setclip='xclip -selection c'
+alias getclip='xclip -selection clipboard -o'
+
 
 [[ -s '~/.secretrc' ]] && source '~/.secretrc'
 
 
-[[ -s "/home/jbuchma/.gvm/scripts/gvm" ]] && source "/home/jbuchma/.gvm/scripts/gvm"
+[[ -s "~/.gvm/scripts/gvm" ]] && source "~/.gvm/scripts/gvm"

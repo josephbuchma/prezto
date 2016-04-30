@@ -12,8 +12,6 @@ fi
 
 setxkbmap -option ctrl:swapcaps
 
-xset mouse 2/3 0
-
 # Customize to your needs...
 
 export TERM="xterm-256color"

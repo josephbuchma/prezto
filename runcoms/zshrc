@@ -21,12 +21,53 @@ stty -ixon
 alias setclip='xclip -selection c'
 alias getclip='xclip -selection clipboard -o'
 
+# helpers
 
-[[ -s '~/.secretrc' ]] && source '~/.secretrc'
+set_dark() {
+  ~/vimrc/gnome-terminal-colors-solarized/install.sh -s dark -p :b1dcc9dd-5262-4d8d-a863-c897e6d979b9
+  echo 'call SetDarkBg()' >! ~/.vimbackground
+}
+
+set_light() {
+  ~/vimrc/gnome-terminal-colors-solarized/install.sh -s light -p :b1dcc9dd-5262-4d8d-a863-c897e6d979b9
+  echo 'call SetLightBg()' >! ~/.vimbackground
+}
 
 
-[[ -s "~/.gvm/scripts/gvm" ]] && source "~/.gvm/scripts/gvm"
+[[ -s "/home/joseph/.gvm/scripts/gvm" ]] && source "/home/joseph/.gvm/scripts/gvm"
 
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
+source $HOME/.solanodevrc
 
-[[ -s "/home/jbuchma/.gvm/scripts/gvm" ]] && source "/home/jbuchma/.gvm/scripts/gvm"
+setup_begot_gopath() {
+    cd ~/solanolabs/tddium_system/build_agent && export GOPATH=$GOPATH:`begot gopath`
+    cd ~/.cache/begot/wk/d4a82177/src/
+}
+
+vget() {
+  [ $# -eq 0 ] && echo 'Usage:\n\t vget <git_repo_clone_url> [git_ref]'
+  a=$1
+  p=vendor/${a:8}
+  if [ ! -d $p ] || [ ! -d "$p/.git" ]; then
+    echo 'Clone...'
+    rm -rf $p > /dev/null 2>&1
+    git clone $a $p > /dev/null 2>&1
+  fi
+  _pwd=`pwd`
+  if [ $# -eq 2 ]; then
+    echo "Check out $2"
+    cd $p && git checkout $2 > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+      echo "git checkout FAILED. Rerun vget with correct git ref or go to $p, checkout manually and delete .git"
+      cd $_pwd
+      return 1
+    fi
+  fi
+  cd $_pwd
+  echo 'Remove .git'
+  rm -rf "$p/.git"
+  echo 'Done.'
+}
+
+[[ -s ~/.solanodevrc ]] && source ~/.solanodevrc

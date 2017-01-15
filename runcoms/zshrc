@@ -71,3 +71,22 @@ vget() {
 }
 
 [[ -s ~/.solanodevrc ]] && source ~/.solanodevrc
+source /home/joseph/vimrc/zaw/zaw.zsh
+alias gop="hsandbox go"
+
+eval "$(direnv hook zsh)"
+
+batlife() {
+    upower -i /org/freedesktop/UPower/devices/battery_BAT0
+}
+
+set_wacom_output() {
+    $o=eDP1
+    if [ $# -eq 1 ]; then
+        $o=$1
+    fi
+    xsetwacom --set "Wacom Bamboo Connect Pen stylus" MapToOutput $o
+}
+
+
+

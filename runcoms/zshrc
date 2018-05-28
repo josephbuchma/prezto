@@ -12,6 +12,9 @@ fi
 
 setxkbmap -option ctrl:swapcaps
 
+# disable Ctrl-d
+set -o ignoreeof
+
 # Customize to your needs...
 
 export TERM="xterm-256color"
@@ -88,5 +91,17 @@ set_wacom_output() {
     xsetwacom --set "Wacom Bamboo Connect Pen stylus" MapToOutput $o
 }
 
+vimg() {
+    vim -c 'tab sball' `git status --porcelain | sed -ne 's/^ M //p'`
+}
 
 
+d_mysql() {
+    mysql -h 127.0.0.1 -u root
+}
+
+
+# added by travis gem
+[ -f /home/joseph/.travis/travis.sh ] && source /home/joseph/.travis/travis.sh
+
+command -v vg >/dev/null 2>&1 && eval "$(vg eval --shell zsh)"

@@ -1,3 +1,5 @@
+[[ $TERM != "screen" ]] && exec tmux
+
 #
 # Executes commands at the start of an interactive session.
 #
@@ -10,12 +12,16 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
-setxkbmap -option ctrl:swapcaps
+# clear xkbmap options
+setxkbmap -option
+# set xkbmap options:
+# - ctrl:swapcaps   - swap Ctrl and CapsLock
+# - grp:lwin_toggle - switch layout using left "win" button
+# - lv3:rwin_switch - right "win" switch: no idea what it actually does, but it fixes mapping when using Chrome. https://askubuntu.com/a/1011482
+setxkbmap -layout us,ua -option 'ctrl:swapcaps,grp:lwin_toggle,lv3:rwin_switch'
 
 # disable Ctrl-d
 set -o ignoreeof
-
-# Customize to your needs...
 
 export TERM="xterm-256color"
 stty -ixon
@@ -23,30 +29,11 @@ stty -ixon
 # aliases
 alias setclip='xclip -selection c'
 alias getclip='xclip -selection clipboard -o'
+alias save='git add . && git commit -nm save && git push origin `git rev-parse --abbrev-ref HEAD`'
 
 # helpers
 
-set_dark() {
-  ~/vimrc/gnome-terminal-colors-solarized/install.sh -s dark -p :b1dcc9dd-5262-4d8d-a863-c897e6d979b9
-  echo 'call SetDarkBg()' >! ~/.vimbackground
-}
-
-set_light() {
-  ~/vimrc/gnome-terminal-colors-solarized/install.sh -s light -p :b1dcc9dd-5262-4d8d-a863-c897e6d979b9
-  echo 'call SetLightBg()' >! ~/.vimbackground
-}
-
-
 [[ -s "/home/joseph/.gvm/scripts/gvm" ]] && source "/home/joseph/.gvm/scripts/gvm"
-
-export PATH="$HOME/.rbenv/bin:$PATH"
-eval "$(rbenv init -)"
-source $HOME/.solanodevrc
-
-setup_begot_gopath() {
-    cd ~/solanolabs/tddium_system/build_agent && export GOPATH=$GOPATH:`begot gopath`
-    cd ~/.cache/begot/wk/d4a82177/src/
-}
 
 vget() {
   [ $# -eq 0 ] && echo 'Usage:\n\t vget <git_repo_clone_url> [git_ref]'
@@ -73,8 +60,7 @@ vget() {
   echo 'Done.'
 }
 
-[[ -s ~/.solanodevrc ]] && source ~/.solanodevrc
-source /home/joseph/vimrc/zaw/zaw.zsh
+source $HOME/.config/zaw/zaw.zsh
 alias gop="hsandbox go"
 
 eval "$(direnv hook zsh)"
@@ -105,3 +91,25 @@ d_mysql() {
 [ -f /home/joseph/.travis/travis.sh ] && source /home/joseph/.travis/travis.sh
 
 command -v vg >/dev/null 2>&1 && eval "$(vg eval --shell zsh)"
+
+eval `dircolors $HOME/.dir_colors/dircolors`
+
+if [[ `hostname` == *"xps"* ]]; then
+	xmodmap -e "keycode 94 = Shift_L NoSymbol Shift_L"
+fi
+
+xset r rate 200 30
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+export PATH=/home/joseph/.sit-install:$PATH
+
+export ANDROID_HOME=$HOME/Android/Sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/tools
+export PATH=$PATH:$ANDROID_HOME/tools/bin
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+
+# tabtab source for packages
+# uninstall by removing these lines
+[[ -f /.config/tabtab/__tabtab.zsh ]] && . ~/.config/tabtab/__tabtab.zsh || true
